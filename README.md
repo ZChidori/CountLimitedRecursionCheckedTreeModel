@@ -1,5 +1,5 @@
 # CountLimitedRecursionCheckedTreeModel
-用于QTreeView的层级选择限制model，可为每层设置最大可选数目  
+用于QTreeView的层级选择限制model，可随时为每层设置最大可选数目  
 ## 用法
 public函数：
 ```c++
