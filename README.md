@@ -1,0 +1,2 @@
+# CountLimitedRecursionCheckedTreeModel
+用于QTreeView的层级选择限制model
