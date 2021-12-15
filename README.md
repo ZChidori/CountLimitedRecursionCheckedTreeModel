@@ -11,10 +11,10 @@ void removeLevelLimit(int level);
 int getDepth(QStandardItem *item);
 //获取depth层当前已选数量
 int getCheckedCount(const int depth);
-```c++
+```
 信号：
 ```c++
-//勾选后超出该层限制信号，levelVector为当前设置过层的限制信息，用法见void MainWindow::slotLimitError(std::vector<LevelState> levelVector)
+//勾选后超出该层限制则发送该信号，levelVector为当前设置过层的限制信息，用法见void MainWindow::slotLimitError(std::vector<LevelState> levelVector)
 void signalLevelLimitExceeded(std::vector<LevelState> levelVector);
 //代替原生itemChanged信号
 void signalItemChanged(QStandardItem *item);
