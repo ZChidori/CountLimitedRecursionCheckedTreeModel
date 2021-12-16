@@ -14,7 +14,7 @@ int getCheckedCount(const int depth);
 ```
 信号：
 ```c++
-//勾选后超出该层限制则发送该信号，levelVector为当前设置过层的限制信息，用法见void MainWindow::slotLimitError(std::vector<LevelState> levelVector)
+//勾选后超出该层限制则发送该信号，levelVector为当前设置过层的限制信息
 void signalLevelLimitExceeded(std::vector<LevelState> levelVector);
 //代替原生itemChanged信号
 void signalItemChanged(QStandardItem *item);
