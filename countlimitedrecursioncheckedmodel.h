@@ -30,7 +30,7 @@ private slots:
 private:
 	std::vector<LevelState> levelLimitVector;
 	std::map<int,int> checked;
-	unsigned getLevelLimitIndex(int level);
+	size_t getLevelLimitIndex(int level);
 	void calculateChildrenIncrement(QStandardItem *item,Qt::CheckState checkState);
 	void calculateSelfIncrement(QStandardItem *item);
 	void calculateParentIncrement(QStandardItem *parent,QStandardItem *item,Qt::CheckState checkState);
