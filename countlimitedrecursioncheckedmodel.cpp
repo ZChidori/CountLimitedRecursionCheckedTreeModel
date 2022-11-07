@@ -13,7 +13,7 @@ CountLimitedRecursionCheckedModel::CountLimitedRecursionCheckedModel(QObject *pa
 void CountLimitedRecursionCheckedModel::checkChildren(QStandardItem *item,Qt::CheckState checkState)
 {
 	if(item->hasChildren())
-		for(int i=0,s=item->rowCount();i<s;checkChildren(item->child(i++),checkState));
+		for(int i=0;i<item->rowCount();checkChildren(item->child(i++),checkState));
 	//防止重复勾选
 	if(item->checkState()!=checkState)
 		item->setCheckState(checkState);
@@ -43,7 +43,7 @@ void CountLimitedRecursionCheckedModel::checkParent(QStandardItem *item)
 void CountLimitedRecursionCheckedModel::slotItemRecursionCheck(QStandardItem* item)
 {
 	disconnect(this,&CountLimitedRecursionCheckedModel::itemChanged,this,&CountLimitedRecursionCheckedModel::slotItemRecursionCheck);
-	int s=levelLimitVector.size();
+	size_t s=levelLimitVector.size();
 	//保存点击前状态
 	std::vector<LevelState> tempLevelLimitVector=levelLimitVector;
 	Qt::CheckState checkState=item->checkState();
@@ -56,7 +56,7 @@ void CountLimitedRecursionCheckedModel::slotItemRecursionCheck(QStandardItem* it
 		calculateParentIncrement(item->parent(),item,checkState);
 		//只返回超出限制的层的vector
 		std::vector<LevelState> levelVector;
-		for(int i=0;i<s;i++)
+		for(size_t i=0;i<s;i++)
 			//和计算后的状态vector比较
 			if(levelLimitVector[i].checked>levelLimitVector[i].max)
 				//返回变量里存计算前vector状态
@@ -86,7 +86,7 @@ bool CountLimitedRecursionCheckedModel::setLevelLimit(int level,int max)
 	if(checkedCount>max)
 		return false;
 	//返回true代表设置限制成功，返回false代表该层当前已勾选的item数量已经超出了max，设置失败
-	unsigned index=getLevelLimitIndex(level);
+	size_t index=getLevelLimitIndex(level);
 	if(index<levelLimitVector.size())
 		levelLimitVector[index].max=max;
 	else
@@ -97,7 +97,7 @@ bool CountLimitedRecursionCheckedModel::setLevelLimit(int level,int max)
 
 void CountLimitedRecursionCheckedModel::removeLevelLimit(int level)
 {
-	unsigned index=getLevelLimitIndex(level);
+	size_t index=getLevelLimitIndex(level);
 	if(index<levelLimitVector.size())
 		levelLimitVector.erase(levelLimitVector.begin()+index);
 }
@@ -107,21 +107,21 @@ void CountLimitedRecursionCheckedModel::calculateChildrenIncrement(QStandardItem
 	//向下递归计数，不包括自己这层
 	//先递归到最底层再计数
 	if(item->hasChildren())
-		for(int i=0,s=item->rowCount();i<s;calculateChildrenIncrement(item->child(i++),checkState));
+		for(int i=0;i<item->rowCount();calculateChildrenIncrement(item->child(i++),checkState));
 	int level=getDepth(item);
-	unsigned index=getLevelLimitIndex(level);
+	size_t index=getLevelLimitIndex(level);
 	//vector中无此层的限制信息或当前递归到的被点击的item子项的标志未改变，则该子项不参与子项变更计数
-	if(index==levelLimitVector.size()||checkState==item->checkState())
-		return;
-	switch(checkState)
-	{
-	case Qt::CheckState::Checked:
-		levelLimitVector[index].checked++;
-		break;
-	case Qt::CheckState::Unchecked:
-		levelLimitVector[index].checked--;
-	default:;
-	}
+	if(index<levelLimitVector.size()&&checkState!=item->checkState())
+		switch(checkState)
+		{
+		case Qt::CheckState::Checked:
+			levelLimitVector[index].checked++;
+			break;
+		case Qt::CheckState::Unchecked:
+			levelLimitVector[index].checked--;
+			break;
+		default:;
+		}
 }
 
 void CountLimitedRecursionCheckedModel::calculateParentIncrement(QStandardItem *parent,QStandardItem *item,Qt::CheckState checkState)
@@ -176,7 +176,7 @@ void CountLimitedRecursionCheckedModel::recursionCheck(QStandardItem *item)
 unsigned CountLimitedRecursionCheckedModel::getLevelLimitIndex(int level)
 {
 	//根据层级获取层级限制状态信息在vector的位置，若不存在则返回levelLimitVector.size()
-	int i=0,s=levelLimitVector.size();
+	size_t i=0,s=levelLimitVector.size();
 	for(;i<s;i++)
 		if(levelLimitVector[i].level==level)
 			return i;
