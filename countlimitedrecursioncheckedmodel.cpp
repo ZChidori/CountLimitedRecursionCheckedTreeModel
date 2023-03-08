@@ -108,8 +108,7 @@ void CountLimitedRecursionCheckedModel::calculateChildrenIncrement(QStandardItem
 	//先递归到最底层再计数
 	if(item->hasChildren())
 		for(int i=0;i<item->rowCount();calculateChildrenIncrement(item->child(i++),checkState));
-	int level=getDepth(item);
-	size_t index=getLevelLimitIndex(level);
+	size_t index=getLevelLimitIndex(getDepth(item));
 	//vector中无此层的限制信息或当前递归到的被点击的item子项的标志未改变，则该子项不参与子项变更计数
 	if(index<levelLimitVector.size()&&checkState!=item->checkState())
 		switch(checkState)
